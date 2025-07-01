@@ -60,36 +60,17 @@ else
     echo "::set-output name=updated::true"
 fi
 
-# 更新 istoreos.yml 文件
-if [ -f "istoreos.yml" ]; then
-    echo "更新 istoreos.yml 文件中的镜像 URL..."
-    
-    # 备份原文件
-    cp istoreos.yml istoreos.yml.bak
-    
-    # 更新文件中的 URL 和文件名
-    # 使用兼容不同系统的 sed 命令
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        sed -i '' "s|url: https://fw.koolcenter.com/iStoreOS/x86_64_efi/.*img\.gz|url: $FULL_URL|g" istoreos.yml
-        sed -i '' "s|filename: istoreos-.*-x86_64-efi-squashfs\.img\.gz|filename: $LATEST_IMG_GZ|g" istoreos.yml
-    else
-        # Linux 和其他系统
-        sed -i "s|url: https://fw.koolcenter.com/iStoreOS/x86_64_efi/.*img\.gz|url: $FULL_URL|g" istoreos.yml
-        sed -i "s|filename: istoreos-.*-x86_64-efi-squashfs\.img\.gz|filename: $LATEST_IMG_GZ|g" istoreos.yml
-    fi
-    
-    echo "更新完成。"
-    
-    # 显示差异
-    echo "文件更改内容："
-    diff istoreos.yml.bak istoreos.yml || true
-else
-    echo "错误：找不到 istoreos.yml 文件，无法更新"
+# 更新 .github/workflows/istoreos.yml 文件中的 URL 和日期
+if [ ! -f ".github/workflows/istoreos.yml" ]; then
+    echo "错误：找不到 .github/workflows/istoreos.yml 文件"
     exit 1
 fi
 
-# 更新 .github/workflows/istoreos.yml 文件中的 URL 和日期
+echo "更新 .github/workflows/istoreos.yml 文件中的镜像 URL..."
+
+# 备份原文件
+cp .github/workflows/istoreos.yml .github/workflows/istoreos.yml.bak
+
 sed -i "s|wget https://fw.*img\.gz|wget $FULL_URL|g" .github/workflows/istoreos.yml
 sed -i "s|URL=\"https://fw.*img\.gz\"|URL=\"$FULL_URL\"|g" .github/workflows/istoreos.yml
 
@@ -104,14 +85,18 @@ else
     echo "警告：无法更新文件名"
 fi
 
-echo "istoreos.yml 文件已更新"
+echo ".github/workflows/istoreos.yml 文件已更新"
 
-# # 如果设置了自动构建，则触发 GitHub Actions 工作流
-# if [ "$1" == "--build" ]; then
-#     echo "触发 GitHub Actions 工作流..."
-#     # 这里需要使用 GitHub CLI 或 API 来触发工作流
-#     # 例如：gh workflow run "Build iStoreOS Scratch Docker Image and Push to Docker Hub"
-#     # 或者使用 curl 调用 GitHub API
-# fi
+# 显示差异
+echo "文件更改内容："
+diff .github/workflows/istoreos.yml.bak .github/workflows/istoreos.yml || true
 
-# echo "完成！"
+# 如果设置了自动构建，则触发 GitHub Actions 工作流
+if [ "$1" == "--build" ]; then
+    echo "触发 GitHub Actions 工作流..."
+    # 这里需要使用 GitHub CLI 或 API 来触发工作流
+    # 例如：gh workflow run "Build iStoreOS Scratch Docker Image and Push to Docker Hub"
+    # 或者使用 curl 调用 GitHub API
+fi
+
+echo "完成！"
