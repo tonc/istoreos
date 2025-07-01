@@ -34,8 +34,8 @@ jobs:
           git add .github/workflows/istoreos.yml
           git commit -m "Update iStoreOS image URL to latest version" || echo "No changes to commit"
           git push "https://${GITHUB_ACTOR}:${{ secrets.WORKFLOW_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#refs/heads/}
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        # env:
+          # GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
 
       # 如果检测到更新，则触发构建工作流
       - name: Install GitHub CLI
@@ -54,5 +54,5 @@ jobs:
           echo "检测到新版本，触发构建工作流..."
           # 使用 GitHub CLI 触发工作流
           gh workflow run "Build iStoreOS Scratch Docker Image and Push to Docker Hub"
-        env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        # env:
+          # GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
