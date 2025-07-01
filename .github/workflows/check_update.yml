@@ -7,9 +7,9 @@ on:
   # 允许手动触发
   workflow_dispatch:
 
-# permissions:
-#   contents: write
-#   actions: write
+permissions:
+  contents: write
+  actions: write
 
 jobs:
   check-and-build:
@@ -35,11 +35,21 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .github/workflows/istoreos.yml
           git commit -m "Update iStoreOS image URL to latest version" || echo "No changes to commit"
-          git push origin HEAD:${GITHUB_REF#refs/heads/}
+          git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#refs/heads/}
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       # 如果检测到更新，则触发构建工作流
+      - name: Install GitHub CLI
+        if: steps.check-update.outputs.updated == 'true'
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+
       - name: Trigger Build Workflow
         if: steps.check-update.outputs.updated == 'true'
         run: |
@@ -47,4 +57,4 @@ jobs:
           # 使用 GitHub CLI 触发工作流
           gh workflow run "Build iStoreOS Scratch Docker Image and Push to Docker Hub"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
