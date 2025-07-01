@@ -50,36 +50,13 @@ jobs:
           
           # 提交更改
           git add .github/workflows/istoreos.yml
-<<<<<<< HEAD
           git commit -m "Update iStoreOS image to version $NEW_VERSION"
           git push
-=======
-          git commit -m "Update iStoreOS image URL to latest version" || echo "No changes to commit"
-          git push "https://${GITHUB_ACTOR}:${{ secrets.WORKFLOW_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF#refs/heads/}
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
-
-      # 如果检测到更新，则触发构建工作流
-      - name: Install GitHub CLI
-        if: steps.check-update.outputs.updated == 'true'
-        run: |
-          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && sudo apt update \
-          && sudo apt install gh -y
->>>>>>> f0ddb5e6f5432ad46dd1b286705c4a226f65ef02
 
       - name: Trigger Build Workflow
         if: steps.check-update.outputs.updated == 'true'
         run: |
           echo "检测到新版本，触发构建工作流..."
           gh workflow run "Build iStoreOS Scratch Docker Image and Push to Docker Hub"
-<<<<<<< HEAD
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-=======
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
->>>>>>> f0ddb5e6f5432ad46dd1b286705c4a226f65ef02
