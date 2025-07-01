@@ -1,0 +1,46 @@
+name: Check and Build iStoreOS Image
+
+on:
+  schedule:
+    # 每4小时运行一次（0:00, 4:00, 8:00, 12:00, 16:00, 20:00 UTC）
+    - cron: '0 */4 * * *'
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Make script executable
+        run: chmod +x update_istoreos_image.sh
+
+      - name: Check for updates
+        id: check-update
+        run: |
+          ./update_istoreos_image.sh
+        shell: bash
+
+      - name: Commit changes if needed
+        if: steps.check-update.outputs.updated == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add istoreos.yml
+          git commit -m "Update iStoreOS image URL to latest version" || echo "No changes to commit"
+          git push
+
+      # 如果检测到更新，则触发构建工作流
+      - name: Trigger Build Workflow
+        if: steps.check-update.outputs.updated == 'true'
+        run: |
+          echo "检测到新版本，触发构建工作流..."
+          # 使用 GitHub CLI 触发工作流
+          gh workflow run istoreos.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
