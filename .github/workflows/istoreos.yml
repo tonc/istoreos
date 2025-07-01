@@ -23,25 +23,42 @@ jobs:
 
       - name: Download iStoreOS image
         run: |
+<<<<<<< HEAD:.github/workflows/istoreos.yml
           wget https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025060614-x86-64-squashfs-combined-efi.img.gz
+=======
+          wget https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062011-x86-64-squashfs-combined-efi.img.gz
+>>>>>>> 06fcae27f546fbf9bd7f75c2fa6287f029ad1740:istoreos.yml
 
       # 从URL中提取日期部分
       - name: Extract date from URL
         id: extract_date
         run: |
+<<<<<<< HEAD:.github/workflows/istoreos.yml
           # 从URL中提取日期部分（2025060614）
           URL="https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025060614-x86-64-squashfs-combined-efi.img.gz"
+=======
+          # 从URL中提取日期部分（2025062011）
+          URL="https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062011-x86-64-squashfs-combined-efi.img.gz"
+>>>>>>> 06fcae27f546fbf9bd7f75c2fa6287f029ad1740:istoreos.yml
           DATE=$(echo "$URL" | grep -oE '[0-9]{10}')
           echo "Extracted date: $DATE"
           echo "date=$DATE" >> $GITHUB_OUTPUT
 
       - name: Decompress the image
         run: |
+<<<<<<< HEAD:.github/workflows/istoreos.yml
           gzip -d istoreos-24.10.1-2025060614-x86-64-squashfs-combined-efi.img.gz
 
       - name: Rename image file
         run: |
           mv istoreos-24.10.1-2025060614-x86-64-squashfs-combined-efi.img istoreos.img
+=======
+          gzip -d istoreos-24.10.1-2025062011-x86-64-squashfs-combined-efi.img.gz
+
+      - name: Rename image file
+        run: |
+          mv istoreos-24.10.1-2025062011-x86-64-squashfs-combined-efi.img istoreos.img
+>>>>>>> 06fcae27f546fbf9bd7f75c2fa6287f029ad1740:istoreos.yml
 
       - name: Analyze image with binwalk and extract squashfs
         run: |
