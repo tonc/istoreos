@@ -34,12 +34,12 @@ echo "提取的日期：$DATE"
 
 # 检查当前工作流文件中的日期
 CURRENT_DATE=""
-if [ -f "istoreos.yml" ]; then
-    CURRENT_DATE=$(grep -oE 'istoreos-[0-9\.]+-([0-9]{10})-' istoreos.yml | grep -oE '[0-9]{10}' | head -n 1)
+if [ -f ".github/workflows/istoreos.yml" ]; then
+    CURRENT_DATE=$(grep -oE 'istoreos-[0-9\.]+-([0-9]{10})-' .github/workflows/istoreos.yml | grep -oE '[0-9]{10}' | head -n 1)
     echo "当前工作流文件中的日期：$CURRENT_DATE"
 else
-    echo "警告：找不到 istoreos.yml 文件"
-    ls -la
+    echo "警告：找不到 .github/workflows/istoreos.yml 文件"
+    ls -la .github/workflows/
 fi
 
 # 检查是否需要更新
@@ -89,16 +89,16 @@ else
     exit 1
 fi
 
-# 更新 istoreos.yml 文件中的 URL 和日期
-sed -i "s|wget https://fw.*img\.gz|wget $FULL_URL|g" .github\workflows\istoreos.yml
-sed -i "s|URL=\"https://fw.*img\.gz\"|URL=\"$FULL_URL\"|g" .github\workflows\istoreos.yml
+# 更新 .github/workflows/istoreos.yml 文件中的 URL 和日期
+sed -i "s|wget https://fw.*img\.gz|wget $FULL_URL|g" .github/workflows/istoreos.yml
+sed -i "s|URL=\"https://fw.*img\.gz\"|URL=\"$FULL_URL\"|g" .github/workflows/istoreos.yml
 
 # 更新文件名部分
-OLD_FILENAME=$(grep -o "istoreos-.*-x86-64-squashfs-combined-efi\.img" .github\workflows\istoreos.yml | head -n 1)
+OLD_FILENAME=$(grep -o "istoreos-.*-x86-64-squashfs-combined-efi\.img" .github/workflows/istoreos.yml | head -n 1)
 NEW_FILENAME=$(echo "$LATEST_IMG_GZ" | sed 's/\.gz$//')
 
 if [ -n "$OLD_FILENAME" ] && [ -n "$NEW_FILENAME" ]; then
-    sed -i "s|$OLD_FILENAME|$NEW_FILENAME|g" .github\workflows\istoreos.yml
+    sed -i "s|$OLD_FILENAME|$NEW_FILENAME|g" .github/workflows/istoreos.yml
     echo "已更新文件名：$OLD_FILENAME -> $NEW_FILENAME"
 else
     echo "警告：无法更新文件名"
