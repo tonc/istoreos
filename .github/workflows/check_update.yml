@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      workflows: write  # 添加 workflows 写入权限
 
     steps:
       - name: Checkout repository
@@ -33,7 +34,9 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .github/workflows/istoreos.yml
           git commit -m "Update iStoreOS image URL to latest version" || echo "No changes to commit"
-          git push
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # 如果检测到更新，则触发构建工作流
       - name: Trigger Build Workflow
