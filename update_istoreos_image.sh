@@ -28,17 +28,17 @@ echo "最新的 URL: $FULL_URL"
 NEW_DATE=$(echo "$FULL_URL" | grep -o '[0-9]\{10\}')
 echo "提取的日期: $NEW_DATE"
 
-# 设置工作流文件路径
-WORKFLOW_FILE=".github/workflows/check_update.yml"
+# 设置 README 文件路径
+README_FILE="README.md"
 
-# 检查工作流文件是否存在
-if [ -f "$WORKFLOW_FILE" ]; then
-    # 从工作流文件中获取当前的 URL，使用更精确的匹配模式
-    CURRENT_URL=$(grep -o 'https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$WORKFLOW_FILE" | head -n 1)
+# 检查 README 文件是否存在
+if [ -f "$README_FILE" ]; then
+    # 从 README 文件中获取当前的 URL
+    CURRENT_URL=$(grep -o 'https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$README_FILE" | head -n 1)
     
     if [ -z "$CURRENT_URL" ]; then
-        echo "在工作流文件中未找到当前 URL。"
-        # 设置为有更新，因为这是首次运行
+        echo "在 README 文件中未找到当前 URL。"
+        # 设置为有更新，因为这是首次运行或 URL 格式已更改
         if [ -n "$GITHUB_OUTPUT" ]; then
             echo "updated=true" >> $GITHUB_OUTPUT
             echo "url=$FULL_URL" >> $GITHUB_OUTPUT
@@ -76,7 +76,7 @@ if [ -f "$WORKFLOW_FILE" ]; then
         fi
     fi
 else
-    echo "工作流文件不存在。"
+    echo "README 文件不存在。"
     # 设置为有更新，因为这是首次运行
     if [ -n "$GITHUB_OUTPUT" ]; then
         echo "updated=true" >> $GITHUB_OUTPUT
