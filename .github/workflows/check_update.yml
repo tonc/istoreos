@@ -8,9 +8,14 @@ on:
 jobs:
   check-update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 获取完整历史记录，以便创建 PR
 
       - name: Check for updates
         id: check
@@ -25,11 +30,12 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update iStoreOS image URL to 2025062010"
-          title: "Update iStoreOS image URL to 2025062010"
+          commit-message: "Update iStoreOS image URL to ${{ steps.check.outputs.date }}"
+          title: "Update iStoreOS image URL to ${{ steps.check.outputs.date }}"
           body: |
             This PR updates the iStoreOS image URL to the latest version.
             
-            New URL: https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062000-x86-64-squashfs-combined-efi.img.gz
-          branch: update-istoreos-2025062000
+            New URL: ${{ steps.check.outputs.url }}
+          branch: update-istoreos-${{ steps.check.outputs.date }}
           base: main
+          delete-branch: true  # 如果 PR 被合并或关闭，删除分支

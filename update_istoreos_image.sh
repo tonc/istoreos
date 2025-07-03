@@ -15,6 +15,9 @@ rm -f "$TMP_FILE"
 
 if [ -z "$LATEST_URL" ]; then
     echo "无法获取最新的镜像 URL，请检查网络连接或网页结构是否变化。"
+    if [ -n "$GITHUB_OUTPUT" ]; then
+        echo "updated=false" >> $GITHUB_OUTPUT
+    fi
     exit 1
 fi
 
@@ -30,39 +33,28 @@ WORKFLOW_FILE=".github/workflows/check_update.yml"
 
 # 检查工作流文件是否存在
 if [ -f "$WORKFLOW_FILE" ]; then
-    echo "工作流文件存在，检查是否需要更新..."
-    
     # 从工作流文件中获取当前的 URL，使用更精确的匹配模式
     CURRENT_URL=$(grep -o 'https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$WORKFLOW_FILE" | head -n 1)
     
     if [ -z "$CURRENT_URL" ]; then
         echo "在工作流文件中未找到当前 URL。"
-        CURRENT_URL=""
-    else
-        echo "当前的 URL: $CURRENT_URL"
+        # 设置为有更新，因为这是首次运行
+        if [ -n "$GITHUB_OUTPUT" ]; then
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "url=$FULL_URL" >> $GITHUB_OUTPUT
+            echo "date=$NEW_DATE" >> $GITHUB_OUTPUT
+        fi
+        exit 0
     fi
+
+    echo "当前的 URL: $CURRENT_URL"
 
     # 比较 URL
     if [ "$FULL_URL" != "$CURRENT_URL" ]; then
-        echo "检测到新版本，更新工作流文件..."
+        echo "检测到新版本。"
         
-        if [ ! -z "$CURRENT_URL" ]; then
-            # 更新工作流文件中的 URL
-            sed -i "s|$CURRENT_URL|$FULL_URL|g" "$WORKFLOW_FILE"
-            
-            # 从当前 URL 中提取日期部分
-            OLD_DATE=$(echo "$CURRENT_URL" | grep -o '[0-9]\{10\}')
-            
-            # 更新工作流文件中的日期引用
-            if [ ! -z "$OLD_DATE" ] && [ ! -z "$NEW_DATE" ]; then
-                sed -i "s|$OLD_DATE|$NEW_DATE|g" "$WORKFLOW_FILE"
-            fi
-        fi
-        
-        echo "工作流文件已更新。"
-        if [ -n "$GITHUB_OUTPUT" ]; then
-            echo "updated=true" >> $GITHUB_OUTPUT
-        fi
+        # 从当前 URL 中提取日期部分
+        OLD_DATE=$(echo "$CURRENT_URL" | grep -o '[0-9]\{10\}')
         
         # 显示更新的详细信息
         echo "更新详情:"
@@ -70,6 +62,13 @@ if [ -f "$WORKFLOW_FILE" ]; then
         echo "新 URL: $FULL_URL"
         echo "旧日期: $OLD_DATE"
         echo "新日期: $NEW_DATE"
+
+        # 设置 GitHub Actions 输出
+        if [ -n "$GITHUB_OUTPUT" ]; then
+            echo "updated=true" >> $GITHUB_OUTPUT
+            echo "url=$FULL_URL" >> $GITHUB_OUTPUT
+            echo "date=$NEW_DATE" >> $GITHUB_OUTPUT
+        fi
     else
         echo "没有检测到新版本。"
         if [ -n "$GITHUB_OUTPUT" ]; then
@@ -77,9 +76,11 @@ if [ -f "$WORKFLOW_FILE" ]; then
         fi
     fi
 else
-    echo "工作流文件不存在，请先创建工作流文件。"
-    echo "可以使用以下命令创建工作流目录："
-    echo "mkdir -p .github/workflows"
-    echo "然后创建工作流文件 .github/workflows/check_update.yml"
-    exit 1
+    echo "工作流文件不存在。"
+    # 设置为有更新，因为这是首次运行
+    if [ -n "$GITHUB_OUTPUT" ]; then
+        echo "updated=true" >> $GITHUB_OUTPUT
+        echo "url=$FULL_URL" >> $GITHUB_OUTPUT
+        echo "date=$NEW_DATE" >> $GITHUB_OUTPUT
+    fi
 fi
