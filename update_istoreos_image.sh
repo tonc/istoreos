@@ -1,44 +1,85 @@
 #!/bin/bash
 
-# 设置变量
-WORKFLOW_FILE=".github/workflows/istoreos.yml"
-DATE=$(date +%Y%m%d)
-GITHUB_OUTPUT=${GITHUB_OUTPUT:-/dev/null}
-
 # 获取最新的 iStoreOS 镜像 URL
 echo "获取最新的 iStoreOS 镜像 URL..."
-LATEST_URL=$(curl -s https://fw0.koolcenter.com/iStoreOS/x86_64_efi/ | grep -o 'href="[^"]*\.img\.gz"' | grep -o '"[^"]*"' | tr -d '"' | sort -r | head -n 1)
+
+# 直接使用 wget 下载网页内容到临时文件
+TMP_FILE=$(mktemp)
+wget -q -O "$TMP_FILE" https://fw0.koolcenter.com/iStoreOS/x86_64_efi/
+
+# 使用 grep 提取所有 img.gz 文件的链接
+LATEST_URL=$(grep -o 'istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$TMP_FILE" | head -n 1)
+
+# 清理临时文件
+rm -f "$TMP_FILE"
+
+if [ -z "$LATEST_URL" ]; then
+    echo "无法获取最新的镜像 URL，请检查网络连接或网页结构是否变化。"
+    exit 1
+fi
+
 FULL_URL="https://fw0.koolcenter.com/iStoreOS/x86_64_efi/$LATEST_URL"
 echo "最新的 URL: $FULL_URL"
 
-# 从工作流文件中获取当前的 URL
-CURRENT_URL=$(grep -o 'wget https://fw0.koolcenter.com/iStoreOS/x86_64_efi/[^ ]*' $WORKFLOW_FILE | head -n 1 | cut -d ' ' -f 2)
-echo "当前的 URL: $CURRENT_URL"
+# 从 URL 中提取日期部分
+NEW_DATE=$(echo "$FULL_URL" | grep -o '[0-9]\{10\}')
+echo "提取的日期: $NEW_DATE"
 
-# 比较 URL
-if [ "$FULL_URL" != "$CURRENT_URL" ]; then
-    echo "检测到新版本，更新工作流文件..."
+# 设置工作流文件路径
+WORKFLOW_FILE=".github/workflows/check_update.yml"
+
+# 检查工作流文件是否存在
+if [ -f "$WORKFLOW_FILE" ]; then
+    echo "工作流文件存在，检查是否需要更新..."
     
-    # 更新工作流文件中的 URL
-    sed -i "s|wget $CURRENT_URL|wget $FULL_URL|g" $WORKFLOW_FILE
+    # 从工作流文件中获取当前的 URL，使用更精确的匹配模式
+    CURRENT_URL=$(grep -o 'https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$WORKFLOW_FILE" | head -n 1)
     
-    # 从 URL 中提取日期部分
-    NEW_DATE=$(echo "$FULL_URL" | grep -oE '[0-9]{10}')
-    OLD_DATE=$(echo "$CURRENT_URL" | grep -oE '[0-9]{10}')
-    
-    # 更新工作流文件中的日期引用
-    sed -i "s|$OLD_DATE|$NEW_DATE|g" $WORKFLOW_FILE
-    
-    echo "工作流文件已更新。"
-    echo "updated=true" >> $GITHUB_OUTPUT
-    
-    # 显示更新的详细信息，便于调试
-    echo "更新详情:"
-    echo "旧 URL: $CURRENT_URL"
-    echo "新 URL: $FULL_URL"
-    echo "旧日期: $OLD_DATE"
-    echo "新日期: $NEW_DATE"
+    if [ -z "$CURRENT_URL" ]; then
+        echo "在工作流文件中未找到当前 URL。"
+        CURRENT_URL=""
+    else
+        echo "当前的 URL: $CURRENT_URL"
+    fi
+
+    # 比较 URL
+    if [ "$FULL_URL" != "$CURRENT_URL" ]; then
+        echo "检测到新版本，更新工作流文件..."
+        
+        if [ ! -z "$CURRENT_URL" ]; then
+            # 更新工作流文件中的 URL
+            sed -i "s|$CURRENT_URL|$FULL_URL|g" "$WORKFLOW_FILE"
+            
+            # 从当前 URL 中提取日期部分
+            OLD_DATE=$(echo "$CURRENT_URL" | grep -o '[0-9]\{10\}')
+            
+            # 更新工作流文件中的日期引用
+            if [ ! -z "$OLD_DATE" ] && [ ! -z "$NEW_DATE" ]; then
+                sed -i "s|$OLD_DATE|$NEW_DATE|g" "$WORKFLOW_FILE"
+            fi
+        fi
+        
+        echo "工作流文件已更新。"
+        if [ -n "$GITHUB_OUTPUT" ]; then
+            echo "updated=true" >> $GITHUB_OUTPUT
+        fi
+        
+        # 显示更新的详细信息
+        echo "更新详情:"
+        echo "旧 URL: $CURRENT_URL"
+        echo "新 URL: $FULL_URL"
+        echo "旧日期: $OLD_DATE"
+        echo "新日期: $NEW_DATE"
+    else
+        echo "没有检测到新版本。"
+        if [ -n "$GITHUB_OUTPUT" ]; then
+            echo "updated=false" >> $GITHUB_OUTPUT
+        fi
+    fi
 else
-    echo "没有检测到新版本，无需更新。"
-    echo "updated=false" >> $GITHUB_OUTPUT
+    echo "工作流文件不存在，请先创建工作流文件。"
+    echo "可以使用以下命令创建工作流目录："
+    echo "mkdir -p .github/workflows"
+    echo "然后创建工作流文件 .github/workflows/check_update.yml"
+    exit 1
 fi

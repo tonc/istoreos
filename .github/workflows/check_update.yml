@@ -1,62 +1,35 @@
-name: Check and Build iStoreOS Image
+name: Check iStoreOS Update
 
 on:
   schedule:
-    # 每4小时运行一次（0:00, 4:00, 8:00, 12:00, 16:00, 20:00 UTC）
-    - cron: '0 */4 * * *'
-  # 允许手动触发
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  actions: write
+    - cron: '0 0 * * *'  # 每天运行一次
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
-  check-and-build:
+  check-update:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Make script executable
-        run: chmod +x update_istoreos_image.sh
-
       - name: Check for updates
-        id: check-update
+        id: check
         run: |
-          echo "开始检查更新..."
+          chmod +x ./update_istoreos_image.sh
           ./update_istoreos_image.sh
-          
-          # 显示更详细的调试信息
-          echo "GitHub output file content:"
-          cat $GITHUB_OUTPUT || echo "GitHub output file not found"
-          echo "Updated status: $(cat $GITHUB_OUTPUT | grep updated || echo 'not found')"
-          
-          # 显示工作流文件的更改
-          echo "Changes in workflow file (if any):"
-          git diff .github/workflows/istoreos.yml || echo "No changes detected"
-        shell: bash
-
-      - name: Commit and push if changed
-        if: steps.check-update.outputs.updated == 'true'
-        run: |
-          # 配置 Git
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          
-          # 获取新版本信息
-          NEW_VERSION=$(grep -o 'https://fw0.koolcenter.com/iStoreOS/x86_64_efi/[^ ]*' .github/workflows/istoreos.yml | head -n 1 | grep -o '[0-9]\{10\}')
-          
-          # 提交更改
-          git add .github/workflows/istoreos.yml
-          git commit -m "Update iStoreOS image to version $NEW_VERSION"
-          git push
-
-      - name: Trigger Build Workflow
-        if: steps.check-update.outputs.updated == 'true'
-        run: |
-          echo "检测到新版本，触发构建工作流..."
-          gh workflow run "Build iStoreOS Scratch Docker Image and Push to Docker Hub"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Request if updated
+        if: steps.check.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update iStoreOS image URL to 2025062010"
+          title: "Update iStoreOS image URL to 2025062010"
+          body: |
+            This PR updates the iStoreOS image URL to the latest version.
+            
+            New URL: https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062010-x86-64-squashfs-combined-efi.img.gz
+          branch: update-istoreos-2025062010
+          base: main
