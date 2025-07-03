@@ -1,59 +1,50 @@
-# iStoreOS Docker 镜像自动更新
+# iStoreOS Docker
 
-这个项目自动检查 iStoreOS 的最新版本，并构建 Docker 镜像推送到 Docker Hub。
+这个项目提供了一个自动化工具，用于检查和更新 iStoreOS 的最新版本。
 
-## 功能特点
+## 功能
 
-- 自动检测 iStoreOS 的最新版本
-- 自动更新工作流配置文件
-- 自动构建 Docker 镜像并推送到 Docker Hub
-- 支持手动触发和定时触发
+- 自动检查 iStoreOS 的最新版本
+- 当检测到新版本时，创建 Pull Request 以更新版本信息
+- 支持通过 GitHub Actions 自动运行或手动触发
 
 ## 工作流程
 
-**检查更新并构建镜像工作流** (check_update.yml)
-- 每天运行一次
-- 检查 iStoreOS 是否有新版本
-- 如果有新版本，更新工作流配置文件并创建 Pull Request
-- 下载最新的 iStoreOS 镜像
-- 提取 squashfs 文件系统
-- 构建 Docker 镜像
-- 推送到 Docker Hub
+1. GitHub Actions 工作流每天自动运行（或手动触发）
+2. 脚本检查 iStoreOS 的最新版本
+3. 如果检测到新版本，创建 Pull Request
+4. 合并 Pull Request 后，自动删除临时分支
+
+## 文件说明
+
+- `update_istoreos_image.sh`: 检查 iStoreOS 最新版本的脚本
+- `.github/workflows/check_update.yml`: GitHub Actions 工作流配置
 
 ## 使用方法
 
-### 手动触发工作流
+### 自动检查更新
 
-1. 进入 GitHub 仓库
-2. 点击 "Actions" 标签
-3. 选择 "Check iStoreOS Update" 工作流
-4. 点击 "Run workflow" 按钮
+工作流程已配置为每天自动运行。无需手动干预，系统会自动检查更新并创建 Pull Request。
 
-### 使用 Docker 镜像
+### 手动触发检查
 
-```bash
-docker pull <your-dockerhub-username>/istoreos:latest
-```
+1. 在 GitHub 仓库页面，点击 "Actions" 标签
+2. 选择 "Check iStoreOS Update" 工作流
+3. 点击 "Run workflow" 按钮
+4. 选择 "main" 分支
+5. 点击 "Run workflow" 按钮确认
 
-## 本地测试
+### 本地运行脚本
 
-使用 Bash 脚本检查更新：
+如果需要在本地运行脚本，可以使用以下命令：
 
 ```bash
 chmod +x update_istoreos_image.sh
 ./update_istoreos_image.sh
 ```
 
-## 配置
+## 注意事项
 
-### GitHub Secrets
-
-需要在 GitHub 仓库设置中添加以下 Secrets：
-
-- `DOCKER_USERNAME`: Docker Hub 用户名
-- `DOCKER_PASSWORD`: Docker Hub 密码或访问令牌
-- `GITHUB_TOKEN`: GitHub 个人访问令牌，用于创建 Pull Request
-
-## 许可证
-
-MIT
+- 工作流仅在 main 分支上运行
+- 需要确保 GitHub Actions 有足够的权限创建 Pull Request
+- 脚本依赖于 iStoreOS 官方网站的 URL 结构，如果官方网站更改了 URL 结构，可能需要更新脚本

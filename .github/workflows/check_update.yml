@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 0 * * *'  # 每天运行一次
   workflow_dispatch:  # 允许手动触发
+  push:
+    branches:
+      - main  # 只在 main 分支上运行
 
 jobs:
   check-update:
@@ -16,6 +19,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # 获取完整历史记录，以便创建 PR
+          ref: main  # 确保检出 main 分支
 
       - name: Check for updates
         id: check
