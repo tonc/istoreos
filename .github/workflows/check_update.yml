@@ -30,6 +30,6 @@ jobs:
           body: |
             This PR updates the iStoreOS image URL to the latest version.
             
-            New URL: https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062010-x86-64-squashfs-combined-efi.img.gz
-          branch: update-istoreos-2025062010
+            New URL: https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062000-x86-64-squashfs-combined-efi.img.gz
+          branch: update-istoreos-2025062000
           base: main
