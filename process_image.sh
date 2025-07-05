@@ -50,6 +50,16 @@ fi
 # 显示分区信息
 echo "分区信息:"
 lsblk -f /dev/nbd0
+fdisk -l /dev/nbd0
+echo "等待分区设备出现..."
+sleep 5
+ls -la /dev/nbd0*
+
+# 尝试重新扫描分区表
+echo "重新扫描分区表..."
+partprobe /dev/nbd0
+sleep 2
+ls -la /dev/nbd0*
 
 # 创建挂载点
 echo "创建挂载点..."
@@ -61,9 +71,31 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# 尝试确定正确的分区
+echo "尝试确定正确的分区..."
+ROOT_PARTITION=""
+if [ -e "/dev/nbd0p2" ]; then
+    ROOT_PARTITION="/dev/nbd0p2"
+    echo "找到分区: /dev/nbd0p2"
+elif [ -e "/dev/nbd0p1" ]; then
+    ROOT_PARTITION="/dev/nbd0p1"
+    echo "找到分区: /dev/nbd0p1"
+elif [ -e "/dev/nbd01" ]; then
+    ROOT_PARTITION="/dev/nbd01"
+    echo "找到分区: /dev/nbd01"
+elif [ -e "/dev/nbd02" ]; then
+    ROOT_PARTITION="/dev/nbd02"
+    echo "找到分区: /dev/nbd02"
+else
+    echo "错误: 无法找到有效的分区"
+    # 清理 nbd 设备
+    qemu-nbd -d /dev/nbd0
+    exit 1
+fi
+
 # 挂载分区
-echo "挂载分区..."
-mount /dev/nbd0p2 /mnt/openwrt
+echo "挂载分区 $ROOT_PARTITION..."
+mount $ROOT_PARTITION /mnt/openwrt
 if [ $? -ne 0 ]; then
     echo "错误: 挂载分区失败"
     # 清理 nbd 设备
