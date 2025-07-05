@@ -4,8 +4,8 @@
 
 ## 最新版本
 
-最新的 iStoreOS 镜像 URL: https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.1-2025062010-x86-64-squashfs-combined-efi.img.gz
-更新日期: 2025062010
+最新的 iStoreOS 镜像 URL: https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-24.10.2-2025070410-x86-64-squashfs-combined-efi.img.gz
+更新日期: 2025070410
 
 ## 功能
 
