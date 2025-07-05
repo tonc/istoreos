@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# 获取Github Actions工作目录
-workdir = $2
-
 # 获取镜像 URL
 IMAGE_URL="$1"
 if [ -z "$IMAGE_URL" ]; then
@@ -166,13 +163,6 @@ fi
 
 # 清理
 echo "清理..."
-# cd /home/runner/work/istoreos/istoreos
-cd $workdir
-echo "当前目录: $(pwd)"
-cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
-ls -a
-echo "以下是/github/workspace/"
-ls -la /github/workspace/
 umount /mnt/openwrt/ || true
 qemu-nbd -d /dev/nbd0 || true
 

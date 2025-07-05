@@ -38,7 +38,7 @@ jobs:
         id: process
         run: |
           chmod +x ./process_image.sh
-          sudo ./process_image.sh ${{ steps.check.outputs.url }}  $GH_WORKSPACE
+          sudo ./process_image.sh ${{ steps.check.outputs.url }}
           echo "rootfs_path=istoreos.rootfs.tar.gz" >> $GITHUB_OUTPUT
 
       - name: Update README
@@ -51,7 +51,7 @@ jobs:
 
           ## 最新版本
 
-          - 最新的 iStoreOS 镜像 URL: ${{ steps.check.outputs.url }}
+          - 最新的 iStoreOS 镜像 URL:\n${{ steps.check.outputs.url }}
           - 更新日期: ${{ steps.check.outputs.date }}
 
           ## Docker 镜像
@@ -66,7 +66,9 @@ jobs:
 
           ```bash
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
+
           docker run -d --name istoreos ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
+
           ```
 
           ## 功能
@@ -85,12 +87,13 @@ jobs:
           name: iStoreOS Release ${{ steps.check.outputs.date }}
           body: |
             iStoreOS 版本更新
-            
+
+            istoreos: https://fw.koolcenter.com/iStoreOS/x86_64_efi
             URL: ${{ steps.check.outputs.url }}
             日期: ${{ steps.check.outputs.date }}
           files: |
             # ${{ steps.process.outputs.rootfs_path }}
-            istoreos.rootfs.tar.gz
+            /github/workspace/istoreos.rootfs.tar.gz
           draft: false
           prerelease: false
 
