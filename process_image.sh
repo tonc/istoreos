@@ -164,6 +164,7 @@ fi
 # 清理
 echo "清理..."
 cd $WORKSPACE_DIR
+ehco "目录为 $PWD $WORKSPACE_DIR"
 umount /mnt/openwrt/ || true
 qemu-nbd -d /dev/nbd0 || true
 
