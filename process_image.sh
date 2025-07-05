@@ -163,7 +163,7 @@ fi
 
 # 清理
 echo "清理..."
-cd /
+cd $WORKSPACE_DIR
 umount /mnt/openwrt/ || true
 qemu-nbd -d /dev/nbd0 || true
 
