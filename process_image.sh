@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# 定义工作目录
-workdir = $GITHUB_WORKSPACE
+# 获取Github Actions工作目录
+workdir = $2
+
 # 获取镜像 URL
 IMAGE_URL="$1"
 if [ -z "$IMAGE_URL" ]; then
