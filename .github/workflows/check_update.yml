@@ -24,6 +24,7 @@ jobs:
         run: |
           chmod +x ./update_istoreos_image.sh
           pwd
+          ls -a
       #     ./update_istoreos_image.sh
 
       # - name: Install required packages
