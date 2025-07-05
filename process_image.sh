@@ -163,7 +163,7 @@ fi
 
 # 清理
 echo "清理..."
-cd ${{ github.workspace }}
+cd $REPO_ROOT
 echo "当前目录: $(pwd)"
 cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
 umount /mnt/openwrt/ || true
