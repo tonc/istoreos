@@ -23,97 +23,98 @@ jobs:
         id: check
         run: |
           chmod +x ./update_istoreos_image.sh
+          echo "当前目录为 $GITHUB_WORKSPACE"
           ./update_istoreos_image.sh
 
-      - name: Install required packages
-        if: steps.check.outputs.updated == 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-utils nbd-client
+      # - name: Install required packages
+      #   if: steps.check.outputs.updated == 'true'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y qemu-utils nbd-client
 
-      - name: Process image
-        if: steps.check.outputs.updated == 'true'
-        id: process
-        run: |
-          chmod +x ./process_image.sh
-          sudo ./process_image.sh ${{ steps.check.outputs.url }}
-          echo "rootfs_path=istoreos.rootfs.tar.gz" >> $GITHUB_OUTPUT
+      # - name: Process image
+      #   if: steps.check.outputs.updated == 'true'
+      #   id: process
+      #   run: |
+      #     chmod +x ./process_image.sh
+      #     sudo ./process_image.sh ${{ steps.check.outputs.url }}
+      #     echo "rootfs_path=istoreos.rootfs.tar.gz" >> $GITHUB_OUTPUT
 
-      - name: Update README
-        if: steps.check.outputs.updated == 'true'
-        run: |
-          cat > README.md << EOF
-          # iStoreOS Docker
+      # - name: Update README
+      #   if: steps.check.outputs.updated == 'true'
+      #   run: |
+      #     cat > README.md << EOF
+      #     # iStoreOS Docker
 
-          这个项目提供了一个自动化工具，用于检查和更新 iStoreOS 的最新版本，并构建 Docker 镜像。
+      #     这个项目提供了一个自动化工具，用于检查和更新 iStoreOS 的最新版本，并构建 Docker 镜像。
 
-          ## 最新版本
+      #     ## 最新版本
 
-          最新的 iStoreOS 镜像 URL: ${{ steps.check.outputs.url }}
-          更新日期: ${{ steps.check.outputs.date }}
+      #     - 最新的 iStoreOS 镜像 URL: ${{ steps.check.outputs.url }}
+      #     - 更新日期: ${{ steps.check.outputs.date }}
 
-          ## Docker 镜像
+      #     ## Docker 镜像
 
-          Docker Hub: https://hub.docker.com/${{ secrets.DOCKERHUB_USERNAME }}/istoreos
+      #     Docker Hub: https://hub.docker.com/${{ secrets.DOCKERHUB_USERNAME }}/istoreos
 
-          可用标签:
-          - \`latest\`: 始终指向最新版本
-          - \`${{ steps.check.outputs.date }}\`: 特定版本的时间戳
+      #     可用标签:
+      #     - \`latest\`: 始终指向最新版本
+      #     - \`${{ steps.check.outputs.date }}\`: 特定版本的时间戳
 
-          ## 使用方法
+      #     ## 使用方法
 
-          ```bash
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
-          docker run -d --name istoreos ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
-          ```
+      #     ```bash
+      #     docker pull ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
+      #     docker run -d --name istoreos ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
+      #     ```
 
-          ## 功能
+      #     ## 功能
 
-          - 自动检查 iStoreOS 的最新版本
-          - 当检测到新版本时，自动构建 Docker 镜像
-          - 自动发布到 GitHub Releases 和 Docker Hub
-          EOF
+      #     - 自动检查 iStoreOS 的最新版本
+      #     - 当检测到新版本时，自动构建 Docker 镜像
+      #     - 自动发布到 GitHub Releases 和 Docker Hub
+      #     EOF
 
-      - name: Create Release
-        if: steps.check.outputs.updated == 'true'
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.check.outputs.date }}
-          name: iStoreOS Release ${{ steps.check.outputs.date }}
-          body: |
-            iStoreOS 版本更新
+      # - name: Create Release
+      #   if: steps.check.outputs.updated == 'true'
+      #   id: create_release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: ${{ steps.check.outputs.date }}
+      #     name: iStoreOS Release ${{ steps.check.outputs.date }}
+      #     body: |
+      #       iStoreOS 版本更新
             
-            URL: ${{ steps.check.outputs.url }}
-            日期: ${{ steps.check.outputs.date }}
-          files: |
-            # ${{ steps.process.outputs.rootfs_path }}
-            istoreos.rootfs.tar.gz
-          draft: false
-          prerelease: false
+      #       URL: ${{ steps.check.outputs.url }}
+      #       日期: ${{ steps.check.outputs.date }}
+      #     files: |
+      #       # ${{ steps.process.outputs.rootfs_path }}
+      #       istoreos.rootfs.tar.gz
+      #     draft: false
+      #     prerelease: false
 
-      - name: Login to Docker Hub
-        if: steps.check.outputs.updated == 'true'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      # - name: Login to Docker Hub
+      #   if: steps.check.outputs.updated == 'true'
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push Docker image
-        if: steps.check.outputs.updated == 'true'
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:${{ steps.check.outputs.date }}
+      # - name: Build and push Docker image
+      #   if: steps.check.outputs.updated == 'true'
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: |
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:${{ steps.check.outputs.date }}
 
-      - name: Commit and push if changed
-        if: steps.check.outputs.updated == 'true'
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          git add README.md
-          git commit -m "Update iStoreOS to version ${{ steps.check.outputs.date }}"
-          git push
+      # - name: Commit and push if changed
+      #   if: steps.check.outputs.updated == 'true'
+      #   run: |
+      #     git config --global user.name 'GitHub Actions'
+      #     git config --global user.email 'actions@github.com'
+      #     git add README.md
+      #     git commit -m "Update iStoreOS to version ${{ steps.check.outputs.date }}"
+      #     git push

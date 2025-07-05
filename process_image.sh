@@ -163,7 +163,8 @@ fi
 
 # 清理
 echo "清理..."
-cd /home/runner/work/istoreos/istoreos
+# cd /home/runner/work/istoreos/istoreos
+cd $GITHUB_WORKSPACE
 echo "当前目录: $(pwd)"
 cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
 ls -a
