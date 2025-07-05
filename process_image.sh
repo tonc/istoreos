@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# 定义工作目录
+workdir = $GITHUB_WORKSPACE
 # 获取镜像 URL
 IMAGE_URL="$1"
 if [ -z "$IMAGE_URL" ]; then
@@ -164,7 +166,7 @@ fi
 # 清理
 echo "清理..."
 # cd /home/runner/work/istoreos/istoreos
-cd $GITHUB_WORKSPACE
+cd $workdir
 echo "当前目录: $(pwd)"
 cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
 ls -a
