@@ -88,4 +88,4 @@ jobs:
           git commit -m "Update iStoreOS image URL to ${{ steps.check.outputs.date }}"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token 用于推送更改
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # GitHub Token 用于推送更改
