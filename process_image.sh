@@ -16,15 +16,16 @@ wget "$IMAGE_URL" -O istoreos.img.gz
 
 # 解压镜像
 echo "解压镜像..."
-# 使用 gunzip -c 将内容输出到新文件，避免 trailing garbage 问题
-gunzip -c istoreos.img.gz > istoreos.img || { echo "解压失败"; exit 1; }
+# 使用 gunzip -c 将内容输出到新文件，忽略 trailing garbage 警告
+gunzip -c istoreos.img.gz > istoreos.img
 
 # 验证解压后的文件
 if [ ! -f istoreos.img ] || [ ! -s istoreos.img ]; then
     echo "错误: 解压后的镜像文件不存在或为空"
     exit 1
+else
+    echo "解压成功，镜像大小: $(du -h istoreos.img | cut -f1)"
 fi
-echo "解压成功，镜像大小: $(du -h istoreos.img | cut -f1)"
 
 # 加载 nbd 模块
 echo "加载 nbd 模块..."
