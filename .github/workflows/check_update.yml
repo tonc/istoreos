@@ -14,10 +14,6 @@ jobs:
     permissions:
       contents: write   # 授予写入权限
     steps:
-      - name: Checkout code into a custom directory
-        uses: actions/checkout@v3
-        with:
-          path: /workflows
       - name: Checkout repository
         uses: actions/checkout@v3
         with:

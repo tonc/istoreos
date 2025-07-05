@@ -163,7 +163,7 @@ fi
 
 # 清理
 echo "清理..."
-cd /workflows
+cd /home/runner/work/istoreos/istoreos
 echo "当前目录: $(pwd)"
 cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
 ls -a
