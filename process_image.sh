@@ -163,8 +163,9 @@ fi
 
 # 清理
 echo "清理..."
-cd $WORKSPACE_DIR
-ehco "目录为 $PWD $WORKSPACE_DIR"
+cd ${{ github.workspace }}
+echo "当前目录: $(pwd)"
+cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
 umount /mnt/openwrt/ || true
 qemu-nbd -d /dev/nbd0 || true
 
