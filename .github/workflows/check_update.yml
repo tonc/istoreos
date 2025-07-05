@@ -105,7 +105,7 @@ jobs:
         if: steps.check.outputs.updated == 'true'
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: /github/workspace
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest

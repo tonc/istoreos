@@ -171,6 +171,8 @@ cd $workdir
 echo "当前目录: $(pwd)"
 cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
 ls -a
+echo "以下是/github/workspace/"
+ls -la /github/workspace/
 umount /mnt/openwrt/ || true
 qemu-nbd -d /dev/nbd0 || true
 
