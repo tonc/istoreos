@@ -21,7 +21,8 @@ if [ -z "$LATEST_URL" ]; then
     exit 1
 fi
 
-FULL_URL="https://fw0.koolcenter.com/iStoreOS/x86_64_efi/$LATEST_URL"
+# FULL_URL="https://fw0.koolcenter.com/iStoreOS/x86_64_efi/$LATEST_URL"
+FULL_URL="https://dl.istoreos.com/iStoreOS/x86_64_efi/$LATEST_URL"
 echo "最新的 URL: $FULL_URL"
 
 # 从 URL 中提取日期部分
