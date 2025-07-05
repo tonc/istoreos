@@ -21,6 +21,8 @@ jobs:
 
       - name: Check for updates
         id: check
+        env:
+          GH_WORKSPACE: ${{ github.workspace }}
         run: |
           chmod +x ./update_istoreos_image.sh
           ./update_istoreos_image.sh
@@ -34,8 +36,6 @@ jobs:
       - name: Process image
         if: steps.check.outputs.updated == 'true'
         id: process
-        env:
-          GH_WORKSPACE: ${{ github.workspace }}
         run: |
           chmod +x ./process_image.sh
           sudo ./process_image.sh ${{ steps.check.outputs.url }}  $GH_WORKSPACE
