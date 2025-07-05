@@ -74,22 +74,23 @@ jobs:
           - 自动发布到 GitHub Releases 和 Docker Hub
           EOF
 
-      - name: Create Release
-        if: steps.check.outputs.updated == 'true'
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.check.outputs.date }}
-          name: iStoreOS Release ${{ steps.check.outputs.date }}
-          body: |
-            iStoreOS 版本更新
+      # - name: Create Release
+      #   if: steps.check.outputs.updated == 'true'
+      #   id: create_release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: ${{ steps.check.outputs.date }}
+      #     name: iStoreOS Release ${{ steps.check.outputs.date }}
+      #     body: |
+      #       iStoreOS 版本更新
             
-            URL: ${{ steps.check.outputs.url }}
-            日期: ${{ steps.check.outputs.date }}
-          files: |
-            ${{ steps.process.outputs.rootfs_path }}
-          draft: false
-          prerelease: false
+      #       URL: ${{ steps.check.outputs.url }}
+      #       日期: ${{ steps.check.outputs.date }}
+      #     files: |
+      #       # ${{ steps.process.outputs.rootfs_path }}
+      #       istoreos.rootfs.tar.gz
+      #     draft: false
+      #     prerelease: false
 
       - name: Login to Docker Hub
         if: steps.check.outputs.updated == 'true'
