@@ -35,10 +35,10 @@ jobs:
         if: steps.check.outputs.updated == 'true'
         id: process
         env:
-          GITHUB_WORKSPACE: ${{ github.workspace }}
+          GH_WORKSPACE: ${{ github.workspace }}
         run: |
           chmod +x ./process_image.sh
-          sudo ./process_image.sh ${{ steps.check.outputs.url }}  $GITHUB_WORKSPACE
+          sudo ./process_image.sh ${{ steps.check.outputs.url }}  $GH_WORKSPACE
           echo "rootfs_path=istoreos.rootfs.tar.gz" >> $GITHUB_OUTPUT
 
       - name: Update README
