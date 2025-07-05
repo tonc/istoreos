@@ -14,6 +14,10 @@ jobs:
     permissions:
       contents: write   # 授予写入权限
     steps:
+      - name: Checkout code into a custom directory
+        uses: actions/checkout@v3
+        with:
+          path: /workflows
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -21,8 +25,6 @@ jobs:
 
       - name: Check for updates
         id: check
-        env:
-          REPO_ROOT: ${{ github.workspace }}  # 将 github.workspace 的值赋给环境变量 REPO_ROOT
         run: |
           chmod +x ./update_istoreos_image.sh
           ./update_istoreos_image.sh

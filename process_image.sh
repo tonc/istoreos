@@ -163,9 +163,10 @@ fi
 
 # 清理
 echo "清理..."
-cd $REPO_ROOT
+cd /workflows
 echo "当前目录: $(pwd)"
 cp $WORKSPACE_DIR/istoreos.rootfs.tar.gz .
+ls -a
 umount /mnt/openwrt/ || true
 qemu-nbd -d /dev/nbd0 || true
 
