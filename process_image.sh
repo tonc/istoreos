@@ -152,6 +152,7 @@ if [ ! -f "$OUTPUT_FILE" ] || [ ! -s "$OUTPUT_FILE" ]; then
     exit 1
 else
     echo "根文件系统打包成功，大小: $(du -h "$OUTPUT_FILE" | cut -f1)"
+    ls -la "$OUTPUT_FILE"
     
     # 如果使用了临时目录，复制到预期位置
     if [ "$WORKSPACE_DIR" != "/github/workspace" ] && [ "$WORKSPACE_DIR" != "." ]; then
