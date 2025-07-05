@@ -106,6 +106,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: /github/workspace
+          file: ./Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
