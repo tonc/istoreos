@@ -35,7 +35,7 @@ README_FILE="README.md"
 # 检查 README 文件是否存在
 if [ -f "$README_FILE" ]; then
     # 从 README 文件中获取当前的 URL
-    CURRENT_URL=$(grep -o 'https://fw0.koolcenter.com/iStoreOS/x86_64_efi/istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$README_FILE" | head -n 1)
+    CURRENT_URL=$(grep -o 'https://dl.istoreos.com/iStoreOS/x86_64_efi/istoreos-[0-9.]*-[0-9]*-x86-64-squashfs-combined-efi.img.gz' "$README_FILE" | head -n 1)
     
     if [ -z "$CURRENT_URL" ]; then
         echo "在 README 文件中未找到当前 URL。"
