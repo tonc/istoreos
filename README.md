@@ -16,6 +16,8 @@ Docker Hub: https://hub.docker.com/xkand/istoreos
 - `latest`: 始终指向最新版本
 - `2025070410`: 特定版本的时间戳
 
+## Releases 同步更新 可用于 pve-lxc容器
+
 [使用方法](./docker.md)
 
 ## 功能
