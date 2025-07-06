@@ -111,10 +111,10 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:${{ steps.check.outputs.date }}
-            ghcr.io/${{ github.actor }}/istoreos:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
             ghcr.io/${{ github.actor }}/istoreos:${{ steps.check.outputs.date }}
+            ghcr.io/${{ github.actor }}/istoreos:latest
 
       - name: Commit and push if changed
         if: steps.check.outputs.updated == 'true'
