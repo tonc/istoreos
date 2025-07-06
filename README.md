@@ -25,3 +25,7 @@ Docker Hub: https://hub.docker.com/xkand/istoreos
 - 自动检查 iStoreOS 的最新版本
 - 当检测到新版本时，自动构建 Docker 镜像
 - 自动发布到 GitHub Releases 和 Docker Hub
+
+## 打赏作者
+如果项目对你有帮助，欢迎扫码支持一杯咖啡☕️  
+![扫码支持本项目](./image/pay.png)
