@@ -64,11 +64,9 @@ jobs:
           ## 使用方法
 
           ```bash
-
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
-
-          docker run -d --name istoreos ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
-
+          # 拉取镜像
+          - docker pull ${{ secrets.DOCKERHUB_USERNAME }}/istoreos:latest
+          - docker pull ghcr.nju.edu.cn/${{ github.actor }}/istoreos:latest
           ```
 
           ## 功能
