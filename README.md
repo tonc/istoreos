@@ -23,10 +23,10 @@ latest: Pulling from xkand/istoreos
 04f6b82af385: Verifying Checksum
 04f6b82af385: Download complete
 04f6b82af385: Pull complete
-Digest: sha256:9a1099c05832b8606df38a79d80fcc6c6eb78a96e03ee270d5c9c9ca7f0bcf56
+Digest: sha256:147833d076c10da5f6b6454f75596c46e4ef03e1bef9a888d9df42dd78c1a647
 Status: Downloaded newer image for xkand/istoreos:latest
 docker.io/xkand/istoreos:latest
-e6476d25eb5cd39ef6345c6983abce88a35fc2c6dd2ec297c19dacf4a90c8e98
+c9ab356e572f21424a1f06a8293fe5de59f3e35dddbcbdfc37f901ff09b6ca02
 
 ## 功能
 
