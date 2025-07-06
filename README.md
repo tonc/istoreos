@@ -28,4 +28,4 @@ Docker Hub: https://hub.docker.com/xkand/istoreos
 
 ## 打赏作者
 如果项目对你有帮助，欢迎扫码支持一杯咖啡☕️  
-<img src="./image/pay.png" alt="扫码支持" width="300" />
+<img src="./image/pay.png" alt="扫码支持" width="500" />
