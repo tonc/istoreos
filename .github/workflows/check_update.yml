@@ -73,7 +73,7 @@ jobs:
 
           ## 打赏作者
           如果项目对你有帮助，欢迎扫码支持一杯咖啡☕️  
-          <img src="./image/pay.png" alt="扫码支持" width="100" />
+          <img src="./image/pay.png" alt="扫码支持" width="500" />
           EOF
 
       - name: Create Release
