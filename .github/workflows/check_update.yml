@@ -61,6 +61,8 @@ jobs:
           - \`latest\`: 始终指向最新版本
           - \`${{ steps.check.outputs.date }}\`: 特定版本的时间戳
 
+          ## Releases 同步更新 可用于 pve-lxc容器
+
           [使用方法](./docker.md)
 
           ## 功能
