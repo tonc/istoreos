@@ -10,7 +10,7 @@
 
 ## Docker 镜像
 
-Docker Hub: https://hub.docker.com/xkand/istoreos
+Docker Hub: https://hub.docker.com/r/xkand/istoreos
 
 可用标签:
 - `latest`: 始终指向最新版本
