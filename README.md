@@ -5,8 +5,8 @@
 ## 最新版本
 
 - 最新的 iStoreOS 镜像 URL:
-  https://dl.istoreos.com/iStoreOS/x86_64_efi/istoreos-24.10.2-2025082211-x86-64-squashfs-combined-efi.img.gz
-- 更新日期: 2025082211
+  https://dl.istoreos.com/iStoreOS/x86_64_efi/istoreos-24.10.2-2025090517-x86-64-squashfs-combined-efi.img.gz
+- 更新日期: 2025090517
 
 ## Docker 镜像
 
@@ -14,7 +14,7 @@ Docker Hub: https://hub.docker.com/r/xkand/istoreos
 
 可用标签:
 - `latest`: 始终指向最新版本
-- `2025082211`: 特定版本的时间戳
+- `2025090517`: 特定版本的时间戳
 
 ## Releases 同步更新 可用于 pve-lxc容器
 
